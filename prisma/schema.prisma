@@ -1,0 +1,85 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model ChitFund {
+  chit_id          Int                   @id @default(autoincrement())
+  name             String
+  fund_amount      Int
+  interest_rate    Int // with 2 digit precision
+  start_bid        Int
+  created_at       DateTime              @default(now())
+  discount_lsecond Int
+  discount_lthird  Int
+  last_bidMonth    Int                   @default(0)
+  status           Boolean               @default(true)
+  isLocked         Boolean               @default(false)
+  bids             Bid[]
+  participants     ChitFundParticipant[]
+  installments     Installment[]
+}
+
+model Participant {
+  participant_id Int                   @id @default(autoincrement())
+  name           String
+  contact_info   String                @unique
+  created_at     DateTime              @default(now())
+  chitFunds      ChitFundParticipant[]
+  bids           Bid[]
+  installments   Installment[]
+}
+
+model ChitFundParticipant {
+  chit_fund_participant_id Int         @id @default(autoincrement())
+  chit                     ChitFund    @relation(fields: [chit_id], references: [chit_id])
+  chit_id                  Int
+  participant              Participant @relation(fields: [participant_id], references: [participant_id])
+  participant_id           Int
+  status                   Status      @default(ACTIVE)
+
+  @@unique([chit_id, participant_id])
+}
+
+model Bid {
+  bid_id         Int         @id @default(autoincrement())
+  chit           ChitFund    @relation(fields: [chit_id], references: [chit_id])
+  chit_id        Int
+  participant    Participant @relation(fields: [participant_id], references: [participant_id])
+  participant_id Int
+  bid_amount     Int
+  bid_order      Int         @default(0)
+  month          Int         @default(0)
+  created_at     DateTime    @default(now())
+}
+
+model Installment {
+  installment_id     Int               @id @default(autoincrement())
+  chit               ChitFund          @relation(fields: [chit_id], references: [chit_id])
+  chit_id            Int
+  participant        Participant       @relation(fields: [participant_id], references: [participant_id])
+  participant_id     Int
+  installment_amount Int
+  installment_month  DateTime
+  status             InstallmentStatus @default(PENDING)
+}
+
+enum Status {
+  ACTIVE
+  COMPLETED
+}
+
+enum InstallmentStatus {
+  PAID
+  PENDING
+}
