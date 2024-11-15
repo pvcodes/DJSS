@@ -26,7 +26,7 @@ const Participant = async () => {
                         <TableCaption>List of all participant</TableCaption>
                         <TableHeader>
                             <TableRow>
-                                <TableHead className="w-[100px]">S No.</TableHead>
+                                <TableHead>S No.</TableHead>
                                 <TableHead>Name</TableHead>
                                 <TableHead>Phone Number (INR) </TableHead>
                                 <TableHead>Total Due (INR)</TableHead>

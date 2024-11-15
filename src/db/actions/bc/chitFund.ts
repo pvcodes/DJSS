@@ -34,6 +34,7 @@ const getFundDetails = async (chit_id: number) => {
 			participant_id: { in: participant_ids },
 		},
 	});
+	
 	console.log(124, participants);
 	const fund_details = await dbClient.chitFund.findUnique({
 		where: { chit_id },

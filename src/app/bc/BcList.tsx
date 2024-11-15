@@ -23,7 +23,7 @@ export default async function BCList() {
       <TableCaption>A list of all BCs Exist</TableCaption>
       <TableHeader>
         <TableRow>
-          <TableHead className="w-[100px]">S No.</TableHead>
+          <TableHead>S No.</TableHead>
           <TableHead>Name</TableHead>
           <TableHead>Fund Amount (INR) </TableHead>
           <TableHead>Interest Rate</TableHead>

@@ -9,34 +9,30 @@ export async function POST(
 		// phone_number: string;
 		const { id } = await params;
 		const body = await req.json();
-		const { participant_id, bid_amount, month } = body;
 
-		// TODO: zod validations
+		console.log(1233, body);
+		
+		const data = body.biddings.map((bidding: any) => ({
+			chit_id: parseInt(id),
+			month: body.month,
+			participant_id: parseInt(bidding.participant_id),
+			bid_amount: parseInt(bidding.bid_amount),
+			bid_order: parseInt(bidding.bid_order),
+		}));
 
-		// await dbClient.bid.deleteMany({ where: { chit_id: parseInt(id) } });
-		// return NextResponse.json({ id });
+		console.log(data, 123)
 
-		const maxValue = await dbClient.bid.aggregate({
-			_max: {
-				bid_order: true,
-			},
-			where: {
-				chit_id: parseInt(id),
-				month,
-			},
+		const bid = await dbClient.bid.createMany({
+			data,
 		});
 
-		const bid_order = maxValue._max.bid_order ?? 0;
+		// CREATE INSTALLMENTS - START
 
-		const bid = await dbClient.bid.create({
-			data: {
-				chit_id: parseInt(id),
-				participant_id: parseInt(participant_id),
-				bid_order: bid_order + 1,
-				month,
-				bid_amount: parseInt(bid_amount),
-			},
-		});
+		//  sort the bids by bid_order, to identify 1st, 2nd, 3rd
+		data.sort((a, b) => a.bid_order - b.bid_order);
+		const topThreeBids = data.slice(-3);
+		// const firstInstallment
+
 
 		return NextResponse.json({ bid });
 	} catch (error) {

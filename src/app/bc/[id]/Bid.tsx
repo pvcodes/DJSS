@@ -34,7 +34,7 @@ const Bid = async ({ chit_id, participants }: BidProps) => {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="w-[100px]">S No.</TableHead>
+                    <TableHead>S No.</TableHead>
                     <TableHead>Bidder Name</TableHead>
                     <TableHead>Bidding Amount</TableHead>
                     <TableHead>Changes</TableHead>

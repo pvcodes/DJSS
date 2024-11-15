@@ -35,7 +35,7 @@ export default async function SingleFundPage({ params }: { params: { id: string 
                                 <TableCaption>A list of all BCs Exist</TableCaption>
                                 <TableHeader>
                                     <TableRow>
-                                        <TableHead className="w-[100px]">S No.</TableHead>
+                                        <TableHead>S No.</TableHead>
                                         <TableHead>Name</TableHead>
                                         <TableHead>Phone Number </TableHead>
                                         <TableHead>Remaining Balance</TableHead>
@@ -44,11 +44,14 @@ export default async function SingleFundPage({ params }: { params: { id: string 
                                 <TableBody>
                                     {/* {allChitFunds.map((fund, index) => { return <FundRow fund={fund} index={index} key={index} /> })} */}
                                     {fund.participants.map((participant, index) => (
-                                        <TableRow>
+                                        <TableRow key={`participant-${index}`}>
                                             <TableCell className="font-medium">{index + 1}</TableCell>
                                             <TableCell className="font-medium">{participant.name}</TableCell>
                                             <TableCell>{participant.contact_info}</TableCell>
-                                            <TableCell>Nil</TableCell>
+                                            <TableCell className='flex justify-around items-center'>
+                                                <span>Nil</span>
+                                                <Button variant='outline' className='sm'>PAID</Button>
+                                            </TableCell>
                                         </TableRow>
                                     ))}
                                 </TableBody>

@@ -53,7 +53,7 @@ const BcCreate = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className="w-[400px] p-4 bg-white shadow-lg rounded-lg">
+        <form onSubmit={handleSubmit(onSubmit)} className="p-4 shadow-lg rounded-lg">
             {/* <h2 className="text-xl font-bold mb-4">Create BC Fund</h2> */}
 
             <FormField
