@@ -9,10 +9,13 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgres"
   url      = env("DATABASE_URL")
 }
 
+// ------------------------------------------------------------------------------------------------------------------- 
+// IGNORE
+// ------------------------------------------------------------------------------------------------------------------- 
 model ChitFund {
   chit_id          Int                   @id @default(autoincrement())
   name             String
@@ -82,4 +85,42 @@ enum Status {
 enum InstallmentStatus {
   PAID
   PENDING
+}
+
+// ------------------------------------------------------------------------------------------------------------------- 
+// IGNORE
+// ------------------------------------------------------------------------------------------------------------------- 
+
+model User {
+  id      Int     @id @default(autoincrement())
+  name    String
+  email   String  @unique
+  ph_no   String
+  isAdmin Boolean @default(false)
+}
+
+model Product {
+  id         Int            @id @default(autoincrement())
+  name       String         @unique
+  price      Float
+  images     ProductImage[] @relation("ProductImages")
+  categories Category[]     @relation("ProductCategories")
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+}
+
+model ProductImage {
+  id        Int      @id @default(autoincrement())
+  bucketKey String   @unique
+  product   Product  @relation("ProductImages", fields: [productId], references: [id])
+  productId Int
+  createdAt DateTime @default(now())
+}
+
+model Category {
+  id        Int       @id @default(autoincrement())
+  name      String    @unique
+  products  Product[] @relation("ProductCategories")
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }

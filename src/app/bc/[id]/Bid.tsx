@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React from 'react'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { Form } from '@/components/ui/form'

@@ -1,12 +1,12 @@
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
-import { Label } from '@/components/ui/label';
-import { Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+// import { Label } from '@/components/ui/label';
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { getFundDetails } from '@/db/actions/bc/chitFund';
-import { TabsContent, TabsList, TabsTrigger } from '@radix-ui/react-tabs'
+// import { TabsContent, TabsList, TabsTrigger } from '@radix-ui/react-tabs'
 import React from 'react'
-import { IoIosArrowBack } from "react-icons/io";
+// import { IoIosArrowBack } from "react-icons/io";
 import AddParticipant from './AddParticipant';
 import BcLock from './BcLock';
 import Bid from './Bid';
