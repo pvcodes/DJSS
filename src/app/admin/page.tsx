@@ -1,6 +1,17 @@
 'use client'
-import UpdatingSoon from "@/components/updating-soon";
+import { TypographyH3 } from "@/components/typography";
+import { Button } from "@/components/ui/button";
+// import UpdatingSoon from "@/components/updating-soon";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
-    return <UpdatingSoon />
+    const router = useRouter()
+    return <>
+        <div className="m-2">
+            <TypographyH3 className="text-center">Admin Dashboard</TypographyH3>
+            <div>
+                <Button variant='secondary' onClick={() => router.push('/admin/catalog')} >Catalog Settings</Button>
+            </div>
+        </div>
+    </>
 }
