@@ -112,7 +112,7 @@ model Product {
 model ProductImage {
   id        Int      @id @default(autoincrement())
   bucketKey String   @unique
-  product   Product  @relation("ProductImages", fields: [productId], references: [id])
+  product   Product  @relation("ProductImages", fields: [productId], references: [id], onDelete: Cascade)
   productId Int
   createdAt DateTime @default(now())
 }

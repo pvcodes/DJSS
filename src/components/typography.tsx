@@ -22,3 +22,19 @@ export function TypographyH3({ children, className, ...props }: TypographyH3Prop
     );
 }
 
+export function TypographyH4({ children, className, ...props }: TypographyH3Props) {
+    return (
+        <h4 className={cn(className, "scroll-m-20 text-xl font-semibold tracking-tight")} {...props}>
+            {children}
+        </h4>
+    )
+}
+
+
+export function TypographyP({ children, className, ...props }: TypographyH3Props) {
+    return (
+        <p className={cn(className, "leading-7 [&:not(:first-child)]:mt-6")} {...props}>
+            {children}
+        </p>
+    )
+}

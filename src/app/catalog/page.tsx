@@ -5,27 +5,53 @@ import { getObjectURL } from "@/lib/s3";
 export default async function CatalogPage({
     searchParams,
 }: {
-    searchParams: Promise<{ categories?: string; sort?: "asc" | "desc"; search?: string }>;
+    searchParams: {
+        categories?: string;
+        sort?: "asc" | "desc";
+        search?: string;
+        page?: string;
+        limit?: string;
+    };
 }) {
     const categories = await getAllCategories();
-    const products = await getAllProducts({ include: { images: true, categories: true } });
-    const params = await searchParams
+    categories.push({ id: -1, name: 'All', createdAt: new Date(), updatedAt: new Date() })
 
-    // Fetch presigned URLs for all images of each product
+    // Extract query params
+    const selectedCategories = searchParams.categories
+        ? searchParams.categories
+            .split(",")
+            .map((name) => name.trim())
+            .filter((name) => name)
+        : [];
+    const sortOrder = (searchParams.sort as "asc" | "desc") || "asc";
+    const searchQuery = searchParams.search || "";
+    const page = searchParams.page ? parseInt(searchParams.page, 10) : 1;
+    const limit = searchParams.limit ? parseInt(searchParams.limit, 10) : 2;
+
+    // Fetch filtered + paginated products
+    const { products, total, totalPages } = await getAllProducts({
+        include: { images: true, categories: true },
+        page,
+        limit,
+        categories: selectedCategories,
+        search: searchQuery,
+        sortOrder,
+    });
+
+    // Attach presigned image URLs
     const productsWithImageUrls = await Promise.all(
         products.map(async (product) => ({
             ...product,
             imageUrls: await Promise.all(
-                product.images.map(async (image) => await getObjectURL(image.bucketKey) || "/placeholder.png")
+                product.images.map(
+                    async (image) =>
+                        (await getObjectURL(image.bucketKey)) || "/placeholder.png"
+                )
             ),
         }))
     );
 
-    const selectedCategories = params.categories
-        ? params.categories.split(",").map((name) => name.trim()).filter((name) => name)
-        : [];
-    const sortOrder = params.sort || "asc";
-    const searchQuery = params.search || "";
+    console.log(products[0])
 
     return (
         <CatalogClient
@@ -34,6 +60,7 @@ export default async function CatalogPage({
             initialCategories={selectedCategories}
             initialSortOrder={sortOrder}
             initialSearchQuery={searchQuery}
+            pagination={{ page, total, totalPages, limit }}
         />
     );
 }

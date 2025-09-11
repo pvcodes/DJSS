@@ -4,6 +4,7 @@ import {
   PutObjectCommand,
   GetObjectCommand,
   PutObjectCommandOutput,
+  DeleteObjectsCommand,
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
@@ -33,6 +34,22 @@ export async function putObjectInS3(
     Bucket: process.env.S3_DJSS_BUCKET_NAME!,
     Key,
     Body,
+  });
+  try {
+    const data = await s3Client.send(command);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function deleteObjectsInS3(Keys: string[]) {
+  const command = new DeleteObjectsCommand({
+    Bucket: process.env.S3_DJSS_BUCKET_NAME!,
+    Delete: {
+      Objects: Keys.map((Key) => ({ Key })),
+      Quiet: true,
+    },
   });
   try {
     const data = await s3Client.send(command);

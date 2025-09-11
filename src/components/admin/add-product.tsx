@@ -81,6 +81,9 @@ export default function AddProduct({ categories }: { categories: Category[] }) {
             // setDescription("");
             setSelectedCategoryIds([]);
             setImages([]);
+
+            window.location.reload()
+
         } catch (error) {
             console.log('Product', error)
             toast.error("Error adding product")

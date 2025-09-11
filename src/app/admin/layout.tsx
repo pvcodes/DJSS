@@ -13,12 +13,10 @@ export default async function RootLayout({
         redirect('/')
     }
 
-    // if 
-
     return (
 
-        <>
+        <div className="p-2 bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800s">
             {children}
-        </>
+        </div>
     );
 }

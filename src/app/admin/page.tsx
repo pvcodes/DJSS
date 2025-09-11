@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 export default function Home() {
     const router = useRouter()
     return <>
-        <div className="m-2">
+        <div>
             <TypographyH3 className="text-center">Admin Dashboard</TypographyH3>
             <div>
                 <Button variant='secondary' onClick={() => router.push('/admin/catalog')} >Catalog Settings</Button>

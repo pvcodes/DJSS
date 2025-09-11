@@ -68,7 +68,7 @@ export function AppSidebar() {
             <SidebarGroupLabel className="text-base font-bold text-foreground mb-0">
               DJSS Jewellers
             </SidebarGroupLabel>
-            <p className="text-xs text-muted-foreground">Premium Jewelry</p>
+            <p className="text-xs text-muted-foreground">Premium Jewellery</p>
           </div>
         </div>
       </SidebarHeader>
