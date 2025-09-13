@@ -7,27 +7,28 @@ import { getObjectURL } from "@/lib/s3";
 export default async function AdminCatalogMainPage({
     searchParams,
 }: {
-    searchParams: {
+    searchParams: Promise<{
         categories?: string;
         sort?: "asc" | "desc";
         search?: string;
         page?: string;
         limit?: string;
-    };
+    }>
 }) {
     const categories = await getAllCategories();
+    const params = await searchParams
 
     // Extract filters
-    const selectedCategories = searchParams.categories
-        ? searchParams.categories
+    const selectedCategories = params.categories
+        ? params.categories
             .split(",")
             .map((name) => name.trim())
             .filter((name) => name)
         : [];
-    const sortOrder = (searchParams.sort as "asc" | "desc") || "asc";
-    const searchQuery = searchParams.search || "";
-    const page = searchParams.page ? parseInt(searchParams.page, 10) : 1;
-    const limit = searchParams.limit ? parseInt(searchParams.limit, 10) : 12;
+    const sortOrder = (params.sort as "asc" | "desc") || "asc";
+    const searchQuery = params.search || "";
+    const page = params.page ? parseInt(params.page, 10) : 1;
+    const limit = params.limit ? parseInt(params.limit, 10) : 12;
 
     // Fetch products with filters, search, and pagination
     const { products, total, totalPages } = await getAllProducts({

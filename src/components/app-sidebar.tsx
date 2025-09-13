@@ -1,21 +1,28 @@
-import { Gem, BookOpen, CreditCard, LogOut } from "lucide-react"
+import { Gem, User2, ChevronUp, DiamondIcon, LogInIcon, ChevronRightIcon, BoxesIcon } from "lucide-react"
 import {
   Sidebar,
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarHeader,
   SidebarFooter,
+  SidebarMenuSub,
 } from "@/components/ui/sidebar"
 import { useSidebar } from "@/components/ui/sidebar"
 import { ModeToggle } from "./theme-toggle"
-import { Button } from "./ui/button"
-import { signOut } from "next-auth/react"
+import { signOut, useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu"
+import Link from "next/link"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./ui/collapsible"
+import { getAllCategories } from "@/actions/catalog"
+import { useEffect, useState } from "react"
+import { Category } from "@prisma/client"
+import { cn } from "@/lib/utils"
+import { APP_NAME } from "@/lib/config"
 
 // Menu items for jewellery business
 const items = [
@@ -25,103 +32,162 @@ const items = [
     icon: Gem,
     description: "Browse jewellery designs"
   },
-  {
-    title: "Khata Book",
-    url: "/khata",
-    icon: BookOpen,
-    description: "Customer accounts & records"
-  },
-  {
-    title: "Business Cards",
-    url: "/business-cards",
-    icon: CreditCard,
-    description: "Manage business cards"
-  },
 ]
 
 export function AppSidebar() {
-  const { setOpenMobile } = useSidebar()
+  const { setOpenMobile, setOpen, open: sidebarOpen } = useSidebar()
   const router = useRouter()
+  const { status: authStatus, data } = useSession()
+
+  const [categories, setCategories] = useState<Array<Category>>()
+  const [categoriesCollapsibleOpen, setCategoriesCollapsibleOpen] = useState<boolean>(true)
+
+  const handleCategoriesCollapsible = () => setCategoriesCollapsibleOpen(!categoriesCollapsibleOpen)
+
+
+  useEffect(() => {
+    async function getData() {
+      try {
+        // setLoading(true);
+        const fetchedData = await getAllCategories();
+        setCategories(fetchedData);
+      } catch {
+      } finally {
+      }
+    }
+    getData();
+  }, []);
 
   const handleNavigation = (url: string) => {
     // Close mobile sidebar when navigating
     setOpenMobile(false)
-    // Navigate to the URL
     router.push(url)
   }
 
-  const handleSignOut = () => {
-    // Close sidebar before signing out
-    setOpenMobile(false)
-    signOut()
-  }
-
   return (
-    <Sidebar className="border-r border-border/40">
+    <Sidebar variant='inset' collapsible='icon'>
       {/* Header Section */}
-      <SidebarHeader className="border-b border-border/40 p-4">
-        <div className="flex items-center gap-3">
-          <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-br from-amber-500 to-amber-600 shadow-lg">
-            <Gem className="w-5 h-5 text-white" />
-          </div>
-          <div>
-            <SidebarGroupLabel className="text-base font-bold text-foreground mb-0">
-              DJSS Jewellers
-            </SidebarGroupLabel>
-            <p className="text-xs text-muted-foreground">Premium Jewellery</p>
-          </div>
-        </div>
+      <SidebarHeader>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              className="data-[slot=sidebar-menu-button]:!p-1.5"
+            >
+              <Link href="/">
+                <DiamondIcon className="!size-5" />
+                <span className="text-base font-semibold">{APP_NAME}</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
       </SidebarHeader>
 
       {/* Main Content */}
-      <SidebarContent className="p-2">
+      <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel className="px-2 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-            Main Menu
-          </SidebarGroupLabel>
-          <SidebarGroupContent className="mt-2">
-            <SidebarMenu className="space-y-1">
+          <SidebarGroupContent>
+            <SidebarMenu >
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
-                    className="w-full h-auto min-h-[60px] justify-start gap-3 px-3 py-3 rounded-lg hover:bg-accent/80 hover:text-accent-foreground transition-all duration-200 group cursor-pointer"
                     onClick={() => handleNavigation(item.url)}
-                    disabled={item.url != '/catalog'}
+                    asChild
                   >
-                    <div className="flex items-center justify-center w-8 h-8 rounded-md bg-primary/10 group-hover:bg-primary/20 transition-colors flex-shrink-0">
+                    <div>
                       <item.icon className="w-4 h-4 text-primary" />
-                    </div>
-                    <div className="flex flex-col items-start text-left flex-1 min-w-0">
-                      <span className="text-sm font-medium leading-tight">{item.title}</span>
-                      <span className="text-xs text-muted-foreground leading-tight mt-0.5">{item.description}</span>
+                      <span>{item.title}</span>
+                      {/* <span className="text-xs text-muted-foreground leading-tight mt-0.5">{item.description}</span> */}
                     </div>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
+              <Collapsible defaultOpen open={categoriesCollapsibleOpen} onOpenChange={handleCategoriesCollapsible}>
+                <SidebarMenuItem>
+                  <CollapsibleTrigger asChild >
+                    {/* <SidebarMenuButton /> */}
+                    <SidebarMenuButton className="flex justify-between" onClick={() => setOpen(true)} >
+                      <div className="flex">
+                        <BoxesIcon className="!size-5 mr-1" />
+                        <span>Categories</span>
+                      </div>
+                      <ChevronRightIcon className={cn("transform transition-transform duration-300", categoriesCollapsibleOpen ? 'rotate-90' : 'rotate-0')} />
+                    </SidebarMenuButton>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent>
+                    <SidebarMenuSub>
+                      {categories?.map((item) => (
+                        <SidebarMenuItem key={item.id}>
+                          <SidebarMenuButton
+                            onClick={() => handleNavigation(`/catalog?categories=${item.name.toLowerCase()}`)}
+                          // asChild
+                          >
+                            <div>
+                              {/* <item.icon className="w-4 h-4 text-primary" /> */}
+                              <span>{item.name}</span>
+                              {/* <span className="text-xs text-muted-foreground leading-tight mt-0.5">{item.description}</span> */}
+                            </div>
+                          </SidebarMenuButton>
+                        </SidebarMenuItem>
+                      ))}
+                    </SidebarMenuSub>
+                  </CollapsibleContent>
+                </SidebarMenuItem>
+              </Collapsible>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
 
       {/* Footer Section */}
-      <SidebarFooter className="border-t border-border/40 p-4 space-y-2">
-        {/* Theme Toggle */}
-        <div className="flex items-center justify-between px-2">
-          <span className="text-sm font-medium text-muted-foreground">Theme</span>
-          <ModeToggle />
-        </div>
-
-        {/* Sign Out Button */}
-        <Button
-          onClick={handleSignOut}
-          variant="outline"
-          size="sm"
-          className="w-full justify-start gap-2 hover:bg-destructive hover:text-destructive-foreground transition-colors"
-        >
-          <LogOut className="w-4 h-4" />
-          Sign Out
-        </Button>
+      <SidebarFooter >
+        <SidebarMenu>
+          {/* <SidebarMenuItem>
+            <SidebarMenuButton>
+              <div>
+                <ModeToggle variant={null} /> Toggle Theme
+                <div className="ml-auto"></div>
+              </div>
+            </SidebarMenuButton>
+          </SidebarMenuItem> */}
+          <SidebarMenuItem>
+            {
+              authStatus === 'authenticated' ?
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <SidebarMenuButton>
+                      <User2 /> {data.user.name}
+                      <ChevronUp className="ml-auto" />
+                    </SidebarMenuButton>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent
+                    side="top"
+                    className="w-[--radix-popper-anchor-width]"
+                  >
+                    <DropdownMenuItem>
+                      <span>Account</span>
+                    </DropdownMenuItem>
+                    {/* <DropdownMenuItem>
+                      <span>Billing</span>
+                    </DropdownMenuItem> */}
+                    <DropdownMenuItem onClick={() => signOut({ callbackUrl: '/' })}>
+                      <span>Sign out</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu> :
+                <SidebarMenuButton onClick={() => handleNavigation('/signin')} variant='outline'><LogInIcon />Login</SidebarMenuButton>
+            }
+          </SidebarMenuItem>
+          {sidebarOpen && <SidebarMenuItem>
+            <SidebarMenuButton
+              className="data-[slot=sidebar-menu-button]:!p-1.5 pl-2"
+              asChild
+            >
+              <ModeToggle />
+            </SidebarMenuButton>
+          </SidebarMenuItem>}
+        </SidebarMenu>
       </SidebarFooter>
-    </Sidebar>
+    </Sidebar >
   )
 }

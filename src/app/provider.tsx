@@ -1,5 +1,5 @@
 'use client'
-import { SidebarProvider } from "@/components/ui/sidebar";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import { ThemeProvider } from "@/components/theme-provider";
 import Navbar from "@/components/app-navbar";
@@ -18,13 +18,12 @@ export default function Provider({
             disableTransitionOnChange
         >
             <SessionProvider>
-
                 <SidebarProvider>
                     <AppSidebar />
-                    <main className="w-full">
+                    <SidebarInset>
                         <Navbar />
                         {children}
-                    </main>
+                    </SidebarInset>
                 </SidebarProvider>
             </SessionProvider >
         </ThemeProvider>

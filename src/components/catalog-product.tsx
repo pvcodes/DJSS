@@ -283,8 +283,8 @@ export function ProductCatalog({
                                             <button
                                                 key={index}
                                                 className={`w-2 h-2 rounded-full transition-colors ${index === currentPreviewIndex
-                                                        ? 'bg-white'
-                                                        : 'bg-white/50'
+                                                    ? 'bg-white'
+                                                    : 'bg-white/50'
                                                     }`}
                                                 onClick={() => {
                                                     setCurrentPreviewIndex(index);

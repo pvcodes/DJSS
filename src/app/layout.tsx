@@ -3,11 +3,12 @@ import "./globals.css";
 
 import Provider from "./provider";
 import { Toaster } from "@/components/ui/sonner"
+import { APP_NAME } from "@/lib/config";
 
 
 
 export const metadata: Metadata = {
-  title: "DJSS Jewellers",
+  title: APP_NAME,
   description: "Dharmendra Singh Jitendra Singh Saraaf",
 };
 
@@ -25,7 +26,6 @@ export default function RootLayout({
           {children}
           <Toaster />
         </Provider>
-
       </body>
     </html>
   );
